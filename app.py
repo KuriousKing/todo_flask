@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, Markup
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import re
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///todo.db"
@@ -35,8 +36,7 @@ def hello_world():
 
     return render_template('index.html', Todos=Todos, query=query)
 
-
-
+#this function updates a todo and reloads the data to show the updated data
 @app.route('/update/<int:sno>', methods=['GET', 'POST'])
 def update(sno):
     if request.method == 'POST':
@@ -52,12 +52,21 @@ def update(sno):
 
     return render_template('update.html', todo=todo)
 
+#this is the delete function which will delete the todo and reload the page to show the modified data
 @app.route('/delete/<int:sno>')
 def delete(sno):
     todo = ToDo.query.filter_by(sno=sno).first()
     db.session.delete(todo)
     db.session.commit()
     return redirect("/")
+
+#this part highlights the search text in the list
+@app.template_filter('highlight')
+def highlight_search_text(text, query):
+    if query and query.strip():
+        highlighted_text = re.sub(re.escape(query), r'<mark>\g<0></mark>', text, flags=re.IGNORECASE)
+        return Markup(highlighted_text)
+    return text
 
 if __name__ == "__main__":
     app.run(debug=True)

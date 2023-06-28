@@ -42,17 +42,19 @@
     <tbody>
       {% for todo in Todos %}
       <tr>
-        <th scope="row">{{loop.index}}</th>
-        <td>{{todo.title}}</td>
-        <td>{{todo.desc}}</td>
-        <td>{{todo.date_created}}</td>
-        <td><a href="/update/{{todo.sno}}" type="button" class="btn btn-outline-warning btn-sm mx-1">Update</a>
-          <a href="/delete/{{todo.sno}}" type="button" class="btn btn-outline-dark btn-sm mx-1">Delete</a>
+        <th scope="row">{{ loop.index }}</th>
+        <td>{{ todo.title|highlight(query) }}</td>
+        <td>{{ todo.desc|highlight(query) }}</td>
+        <td>{{ todo.date_created }}</td>
+        <td>
+          <a href="/update/{{ todo.sno }}" type="button" class="btn btn-outline-warning btn-sm mx-1">Update</a>
+          <a href="/delete/{{ todo.sno }}" type="button" class="btn btn-outline-dark btn-sm mx-1">Delete</a>
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+  
   {% endif %}
 </div>
 
